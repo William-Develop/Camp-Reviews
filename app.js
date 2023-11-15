@@ -4,9 +4,6 @@ const mongoose = require ("mongoose");
 const Campground = require("./models/campground");
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
-    // useNewUrlParsel: true,   (Deprecated)
-    // useCreateIndex: true,    (Deprecated)
-    // useUnifiedTopology: true (Deprecated)
 });
 
 const db = mongoose.connection;
