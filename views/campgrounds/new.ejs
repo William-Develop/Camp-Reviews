@@ -7,17 +7,22 @@
 </head>
 <body>
 
+    <!-- Form for adding a new campground -->
     <form action="/campgrounds" method="POST">
+        <!-- Field for entering the title of the new campground -->
         <div>
             <label for="title">Title</label>
             <input type="text" id="title" name="campground[title]">
         </div>
+        <!-- Field for entering the location of the new campground -->
         <div>
             <label for="location">Location</label>
             <input type="text" id="location" name="campground[location]">
         </div>
+        <!-- Button for submitting the form -->
         <button>Add Campground</button>
     </form>
+    <!-- Link for viewing all campgrounds -->
     <a href="/campgrounds">All Campgrounds</a>
 
 </body>

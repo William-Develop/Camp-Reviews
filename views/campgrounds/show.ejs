@@ -6,18 +6,23 @@
     <title>Show</title>
 </head>
 <body>
+    <!-- Display the title of the campground -->
     <h1><%= campground.title %></h1>
+    <!-- Display the location of the campground -->
     <h2><%= campground.location %></h2>
+    <!-- Link for editing the campground -->
     <p>
         <a href="/campgrounds/<%= campground._id %>/edit">Edit</a>
     </p>
 
+    <!-- Form for deleting the campground -->
     <p>
         <form action="/campgrounds/<%= campground._id%>?_method=DELETE" method="POST">
             <button>Delete</button>
         </form>
     </p>
 
+    <!-- Footer with link to view all campgrounds -->
     <footer>
         <a href="/campgrounds">All Campgrounds</a>
     </footer>

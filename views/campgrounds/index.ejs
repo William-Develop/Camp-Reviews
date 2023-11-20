@@ -9,9 +9,12 @@
     
     <h1>All Campgrounds</h1>
     <div>
+        <!-- Link for adding a new campground -->
         <a href="/campgrounds/new">Add New Campground</a>
     </div>
+    <!-- List of all campgrounds -->
     <ul>
+         <!-- Loop through each campground and create a list item with a link to the campground -->
         <% for (let campground of campgrounds){%>
         <li><a href="/campgrounds/<%= campground._id %>"><%= campground.title %></a></li>
         <% } %>    
