@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Campground</title>
-</head>
-<body>
-
+<% layout("layouts/boilerplate") %>
     <!-- Form for adding a new campground -->
     <form action="/campgrounds" method="POST">
         <!-- Field for entering the title of the new campground -->
@@ -24,6 +16,3 @@
     </form>
     <!-- Link for viewing all campgrounds -->
     <a href="/campgrounds">All Campgrounds</a>
-
-</body>
-</html>
