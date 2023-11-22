@@ -26,7 +26,7 @@ const seedDB = async () => {
         // Generate a random index for cities array
         const random1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 20) + 10;
-        // Create new campground and save to database
+        // New instance campground of model saved to the database
         const camp = new Campground({
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
