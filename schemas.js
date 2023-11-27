@@ -1,7 +1,7 @@
 const Joi = require("joi");
 
 
-// This code exports a Joi schema that validates a 'campground' object, ensuring it has required 'title', 'price', 'image', 'location', and 'description' properties.
+// This code exports a Joi schema that validates a 'campground' object, ensuring it has required  properties.
 module.exports.campgroundSchema = Joi.object({
     campground: Joi.object({
         title: Joi.string().required(),
