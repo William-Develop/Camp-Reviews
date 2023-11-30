@@ -3,7 +3,7 @@ const express = require("express");
 const path = require("path");
 const mongoose = require ("mongoose");
 const ejsMate = require('ejs-mate');
-const { campgroundSchema } = require("./schemas.js");
+const { campgroundSchema, reviewSchema } = require("./schemas.js");
 const catchAsync = require("./utilities/catchAsync");
 const ExpressError = require("./utilities/ExpressError");
 const methodOverride = require("method-override");
@@ -37,6 +37,16 @@ app.use(methodOverride("_method"));
 // Middleware function that validates the request body against the 'campgroundSchema', and throws a custom error with a status code of 400 and a message containing validation error details if validation fails.
 const validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
+    if (error) {
+        const message = error.details.map(element => element.message).join(",")
+        throw new ExpressError(message, 400)
+    } else {
+        next();
+    }
+}
+
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
     if (error) {
         const message = error.details.map(element => element.message).join(",")
         throw new ExpressError(message, 400)
@@ -95,7 +105,7 @@ app.delete("/campgrounds/:id", catchAsync (async (req, res) => {
     res.redirect("/campgrounds");
 }));
 
-app.post("/campgrounds/:id/reviews", catchAsync(async (req, res) => {
+app.post("/campgrounds/:id/reviews", validateReview, catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.review);
     campground.reviews.push(review);
