@@ -1,11 +1,13 @@
-    <% layout("layouts/boilerplate") %>
+<!-- Include the boilerplate layout -->
+<% layout("layouts/boilerplate") %>
 
-    <div class="row">
-        <h1 class="text-center">Edit Campground</h1>
-        <div class="col-6 offset-3">
-                <!-- Form for adding a new campground -->
-            <form action="/campgrounds/<%= campground._id%>?_method=PUT" method="POST" novalidate class="validated-form">
-            <!-- Field for entering the title of the new campground -->
+<div class="row">
+    <!-- Title of the page -->
+    <h1 class="text-center">Edit Campground</h1>
+    <div class="col-6 offset-3">
+        <!-- Form for editing an existing campground -->
+        <form action="/campgrounds/<%= campground._id%>?_method=PUT" method="POST" novalidate class="validated-form">
+            <!-- Input field for the title of the campground -->
             <div class="mb-3">
                 <label class="form-label" for="title">Title</label>
                 <input class="form-control" type="text" id="title" name="campground[title]" value="<%= campground.title%>" required>
@@ -13,7 +15,7 @@
                     Looks good!
                 </div>
             </div>
-            <!-- Field for entering the location of the new campground -->
+            <!-- Input field for the location of the campground -->
             <div class="mb-3">
                 <label class="form-label" for="location">Location</label>
                 <input class="form-control" type="text" id="location" name="campground[location]" value="<%= campground.location %>" required>
@@ -21,7 +23,7 @@
                     Looks good!
                 </div>
             </div>
-    
+            <!-- Input field for the image URL of the campground -->
             <div class="mb-3">
                 <label class="form-label" for="image">Image Url</label>
                 <input class="form-control" type="text" id="image" name="campground[image]" value="<%= campground.image%>" required>
@@ -29,7 +31,7 @@
                     Looks good!
                 </div>
             </div>
-    
+            <!-- Input field for the price of the campground -->
             <div class="mb-3">
                 <label class="form-label" for="price">Campground Price</label>
                 <div class="input-group">
@@ -38,9 +40,9 @@
                     <div class="valid-feedback">
                         Looks good!
                     </div>
-                  </div>
+                </div>
             </div>
-    
+            <!-- Textarea for the description of the campground -->
             <div class="mb-3">
                 <label class="form-label" for="description">Description</label>
                 <textarea class="form-control" type="text" id="description" name="campground[description]" required><%= campground.description %></textarea>
@@ -48,13 +50,12 @@
                     Looks good!
                 </div>
             </div>
-    
-            <!-- Button for submitting the form -->
+            <!-- Button to submit the form -->
             <div class="mb-3">
                 <button class="btn btn-info">Update Campground</button>
             </div>
         </form>
-        <!-- Link for going back to the campground details page -->
+        <!-- Link to go back to the details page of the campground -->
         <a href="/campgrounds/<%= campground._id%>">Back to Campground</a>
-        </div>
-    </div>    
+    </div>
+</div> 
