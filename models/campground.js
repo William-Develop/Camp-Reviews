@@ -1,5 +1,6 @@
 // Import mongoose module
 const mongoose = require ("mongoose");
+const Review = require("./review");
 // Destructure Schema from mongoose
 const Schema = mongoose.Schema;
 
@@ -17,6 +18,16 @@ const CampgroundSchema = new Schema ({
         }
     ]
 });
+
+CampgroundSchema.post("findOneAndDelete", async function (document) {
+    if(document){
+        await Review.deleteMany ({
+            _id: {
+                $in: document.reviews
+            }
+        })
+    }
+})
 
 // Export the Campground model using the CampgroundSchema
 module.exports = mongoose.model("Campground", CampgroundSchema);
