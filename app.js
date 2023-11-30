@@ -8,6 +8,7 @@ const catchAsync = require("./utilities/catchAsync");
 const ExpressError = require("./utilities/ExpressError");
 const methodOverride = require("method-override");
 const Campground = require("./models/campground");
+const Review = require("./models/review");
 
 // Connect to MongoDB
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {});
@@ -93,6 +94,15 @@ app.delete("/campgrounds/:id", catchAsync (async (req, res) => {
     await Campground.findByIdAndDelete(id);
     res.redirect("/campgrounds");
 }));
+
+app.post("/campgrounds/:id/reviews", catchAsync(async (req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
+}))
 
 // Catch-all route in Express that sends a custom "Page Not Found!" error with a 404 status code for any requests to non-existing routes.
 app.all("*", (req, res, next) => {
