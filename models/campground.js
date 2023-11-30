@@ -9,7 +9,13 @@ const CampgroundSchema = new Schema ({
     image: String,
     price: Number,       // Price of the campground
     description: String, // Description of the campground
-    location: String     // Location of the campground
+    location: String,     // Location of the campground
+    reviews: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Review"
+        }
+    ]
 });
 
 // Export the Campground model using the CampgroundSchema
