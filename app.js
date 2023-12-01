@@ -182,6 +182,19 @@ app.delete("/campgrounds/:id/reviews/:reviewId",
     })
 )
 
+// DELETE route for removing a specific campground
+app.delete("/campgrounds/:id", 
+    // Use catchAsync to catch any errors and pass them to the error handling middleware
+    catchAsync(async (req, res) => {
+        // Destructure the id from the request parameters
+        const { id } = req.params;
+        // Find the campground by its id and delete it from the database
+        await Campground.findByIdAndDelete(id);
+        // Redirect the client to the campgrounds page
+        res.redirect("/campgrounds");
+    })
+);
+
 // Define a catch-all route that matches any path for all HTTP methods
 app.all("*", (req, res, next) => {
     // Pass a new ExpressError to the next middleware function
