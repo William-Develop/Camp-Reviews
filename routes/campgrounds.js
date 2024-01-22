@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const catchAsync = require("../utilities/catchAsync");   // Import the catchAsync utility to catch rejected Promises in async functions.
 const { campgroundSchema } = require("../schemas.js"); // Import the schemas for campgrounds and reviews.
+
 const ExpressError = require("../utilities/ExpressError");   // Import the ExpressError class to create HTTP error objects.
 const Campground = require("../models/campground");  // Import the Campground model.
 
