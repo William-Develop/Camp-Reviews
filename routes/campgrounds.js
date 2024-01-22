@@ -6,11 +6,10 @@ const { campgroundSchema } = require("../schemas.js"); // Import the schemas for
 const ExpressError = require("../utilities/ExpressError");   // Import the ExpressError class to create HTTP error objects.
 const Campground = require("../models/campground");  // Import the Campground model.
 
-// Middleware function to validate a campground
+// Middleware to validate a campground
 const validateCampground = (req, res, next) => {
-    // Validate the request body against the campground schema
+    // Validate request body against the campground schema
     const { error } = campgroundSchema.validate(req.body);
-    // If there is an error in validation
     if (error) {
         // Map through the error details and join them into a single string
         const message = error.details.map(element => element.message).join(",")
@@ -41,14 +40,15 @@ router.get("/new", (req, res) => {
 
 // Define a POST route for creating a new campground
 router.post("/", 
-    // Use the validateCampground middleware to validate the incoming data
+    // Use validateCampground middleware to validate incoming data
     validateCampground, 
     // Use the catchAsync function to catch any errors and pass them to the error handling middleware
     catchAsync(async (req, res, next) => {
-        // Create a new Campground instance with the data from the request body
+        // Create new Campground instance with the data from the request body
         const campground = new Campground(req.body.campground);
-        // Save the new campground to the database
+        // Save new campground to the database
         await campground.save();
+        req.flash("success", "Successfully made a new campground!")
         // Redirect the client to the new campground's page
         res.redirect(`/campgrounds/${campground._id}`)
     })
@@ -56,11 +56,11 @@ router.post("/",
 
 // GET route for showing a specific campground
 router.get("/:id", 
-    // Use the catchAsync function to catch any errors and pass them to the error handling middleware
+    // Use catchAsync catch errors and pass to error handling middleware
     catchAsync(async (req, res) => {
-        // Find the campground by its id and populate its reviews
+        // Find campground by id and populate its reviews
         const campground = await Campground.findById(req.params.id).populate("reviews");
-        // Render the 'campgrounds/show' view and pass the campground data to it
+        // Render 'campgrounds/show' view and pass the campground data to it
         res.render("campgrounds/show", { campground });
     })
 );

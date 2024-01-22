@@ -3,6 +3,7 @@ const path = require("path");   // Import the path module to handle and transfor
 const mongoose = require ("mongoose");  // Import the mongoose module to interact with MongoDB.
 const ejsMate = require('ejs-mate');    // Import the ejs-mate module for layout support in EJS templates.
 const session = require("express-session");
+const flash = require("connect-flash");
 const ExpressError = require("./utilities/ExpressError"); // Import ExpressError class to create HTTP error objects.
 const methodOverride = require("method-override");  // Use HTTP verbs such as PUT or DELETE where the client doesn't support it.
 
@@ -28,7 +29,7 @@ app.engine("ejs", ejsMate); // Set EJS template engine using ejsMate
 app.set("view engine", "ejs"); // Set view engine to EJS
 app.set("views", path.join(__dirname, "views")); // Set views directory
 
-// Use middleware for parsing request bodies
+// Use middleware
 app.use(express.urlencoded({extended: true})); // allows for rich objects/arrays encoded to URL-encoded format, allowing for a JSON-like experience.
 app.use(methodOverride("_method")); // Middleware to allow for HTTP verbs like PUT or DELETE.
 app.use(express.static(path.join(__dirname, "public")));
@@ -44,14 +45,20 @@ const sessionConfig = {
     }
 }
 app.use(session(sessionConfig));
+app.use(flash());
 
+app.use((req, res, next) => {
+   res.locals.success = req.flash("success");
+   res.locals.error = req.flash("error");
+   next();
+})
 
+// route handlers
 app.use("/campgrounds", campgrounds);
 app.use("/campgrounds/:id/reviews", reviews)
 
 // Route for homepage
 app.get("/", (req, res) => {
-    // Render the 'home' view when the homepage is accessed.
     res.render("home")
 });
 
