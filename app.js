@@ -10,6 +10,8 @@ const methodOverride = require("method-override");  // Import the method-overrid
 const Campground = require("./models/campground");  // Import the Campground model.
 const Review = require("./models/review");  // Import the Review model.
 
+const campgrounds = require("./routes/campgrounds");
+
 // Connect to MongoDB
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {});
 
@@ -40,21 +42,7 @@ app.use(express.urlencoded({extended: true}));
 // Middleware to allow for HTTP verbs like PUT or DELETE where the client doesn't support it.
 app.use(methodOverride("_method"));
 
-// Middleware function to validate a campground
-const validateCampground = (req, res, next) => {
-    // Validate the request body against the campground schema
-    const { error } = campgroundSchema.validate(req.body);
-    // If there is an error in validation
-    if (error) {
-        // Map through the error details and join them into a single string
-        const message = error.details.map(element => element.message).join(",")
-        // Throw an ExpressError with the error message and a status of 400
-        throw new ExpressError(message, 400)
-    } else {
-        // If there is no error, proceed to the next middleware function
-        next();
-    }
-}
+
 
 // Middleware function to validate a review
 const validateReview = (req, res, next) => {
@@ -72,80 +60,13 @@ const validateReview = (req, res, next) => {
     }
 }
 
+app.use("/campgrounds", campgrounds);
+
 // Route for homepage
 app.get("/", (req, res) => {
     // Render the 'home' view when the homepage is accessed.
     res.render("home")
 });
-
-// GET route for retrieving all campgrounds.
-app.get("/campgrounds", 
-    // Use catchAsync to catch errors and pass them to the error handling middleware.
-    catchAsync(async (req, res) => {
-        // Find all campgrounds in the database
-        const campgrounds =  await Campground.find({});
-        // Render 'campgrounds/index' view and pass the campgrounds data to it.
-        res.render("campgrounds/index", {campgrounds})
-    })
-);
-
-// GET route for displaying the form to create a new campground.
-app.get("/campgrounds/new", (req, res) => {
-    // Render 'campgrounds/new' view which contains the form.
-    res.render("campgrounds/new");
-});
-
-// Define a POST route for creating a new campground
-app.post("/campgrounds", 
-    // Use the validateCampground middleware to validate the incoming data
-    validateCampground, 
-    // Use the catchAsync function to catch any errors and pass them to the error handling middleware
-    catchAsync(async (req, res, next) => {
-        // Create a new Campground instance with the data from the request body
-        const campground = new Campground(req.body.campground);
-        // Save the new campground to the database
-        await campground.save();
-        // Redirect the client to the new campground's page
-        res.redirect(`/campgrounds/${campground._id}`)
-    })
-);
-
-// GET route for showing a specific campground
-app.get("/campgrounds/:id", 
-    // Use the catchAsync function to catch any errors and pass them to the error handling middleware
-    catchAsync(async (req, res) => {
-        // Find the campground by its id and populate its reviews
-        const campground = await Campground.findById(req.params.id).populate("reviews");
-        // Render the 'campgrounds/show' view and pass the campground data to it
-        res.render("campgrounds/show", { campground });
-    })
-);
-
-// GET route for displaying the form to edit a specific campground
-app.get("/campgrounds/:id/edit", 
-    // Use the catchAsync function to catch any errors and pass them to the error handling middleware
-    catchAsync(async (req, res) => {
-        // Find the campground by its id
-        const campground = await Campground.findById(req.params.id)
-        // Render the 'campgrounds/edit' view and pass the campground data to it
-        res.render("campgrounds/edit", { campground });
-    })
-);
-
-// PUT route for updating a specific campground
-app.put("/campgrounds/:id", 
-    // Use the validateCampground middleware to validate the incoming data
-    validateCampground, 
-    // Use the catchAsync function to catch any errors and pass them to the error handling middleware
-    catchAsync (async (req, res) => {
-        // Destructure the id from the request parameters
-        const { id } = req.params;
-        // Find the campground by its id and update it with the data from the request body
-        const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
-        // Redirect the client to the updated campground's page
-        res.redirect(`/campgrounds/${campground._id}`)
-    })
-);
 
 // POST route for adding reviews to a campground, validate the review data before processing
 app.post("/campgrounds/:id/reviews", validateReview, 
@@ -180,27 +101,15 @@ app.delete("/campgrounds/:id/reviews/:reviewId",
         // Redirect the user to the campground's detail page
         res.redirect(`/campgrounds/${id}`);
     })
-)
-
-// DELETE route for removing a specific campground
-app.delete("/campgrounds/:id", 
-    // Use catchAsync to catch any errors and pass them to the error handling middleware
-    catchAsync(async (req, res) => {
-        // Destructure the id from the request parameters
-        const { id } = req.params;
-        // Find the campground by its id and delete it from the database
-        await Campground.findByIdAndDelete(id);
-        // Redirect the client to the campgrounds page
-        res.redirect("/campgrounds");
-    })
 );
+
 
 // Define a catch-all route that matches any path for all HTTP methods
 app.all("*", (req, res, next) => {
     // Pass a new ExpressError to the next middleware function
     // This will be caught by the error handling middleware and send a 404 error with the message "Page Not Found!"
     next(new ExpressError("Page Not Found!", 404))
-})
+});
 
 // Define the error handling middleware
 app.use((err, req, res, next) => {
