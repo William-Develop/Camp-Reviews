@@ -86,6 +86,7 @@ router.put("/:id",
         const { id } = req.params;
         // Find the campground by its id and update it with the data from the request body
         const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground });
+        req.flash("success", "Successfully updated campground!")
         // Redirect the client to the updated campground's page
         res.redirect(`/campgrounds/${campground._id}`)
     })
@@ -99,6 +100,7 @@ router.delete("/:id",
         const { id } = req.params;
         // Find the campground by its id and delete it from the database
         await Campground.findByIdAndDelete(id);
+        req.flash("success", "Successfully deleted a campground!")
         // Redirect the client to the campgrounds page
         res.redirect("/campgrounds");
     })

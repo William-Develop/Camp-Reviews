@@ -22,21 +22,22 @@ const validateReview = (req, res, next) => {
     }
 }
 
-// POST route for adding reviews to a campground, validate the review data before processing
+// POST route for adding reviews to campground, validate the review before processing
 router.post("/", validateReview, 
-    // Use catchAsync to catch any errors and pass them to the error handling middleware
+    // catch errors pass to error handling middleware
     catchAsync(async (req, res) => {
-        // Find the campground by its id
+        // Find campground by id
         const campground = await Campground.findById(req.params.id);
-        // Create a new review from the request body
+        // Create a new review from request body
         const review = new Review(req.body.review);
-        // Add the new review to the campground's reviews array
+        // Add new review to campground's reviews array
         campground.reviews.push(review);
-        // Save the new review to the database
+        // Save new review to the database
         await review.save();
-        // Save the updated campground to the database
+        // Save updated campground to database
         await campground.save();
-        // Redirect the user to the campground's detail page
+        req.flash("success", "Created a new review!")
+        // Redirect user to campground's detail page
         res.redirect(`/campgrounds/${campground._id}`);
     })
 )
@@ -51,6 +52,7 @@ router.delete("/:reviewId",
         await Campground.findByIdAndUpdate(id, { $pull:  {reviews: reviewId}})
         // Find the review by its id and delete it from the database
         await Review.findByIdAndDelete(req.params.reviewId);
+        req.flash("success", "Successfully deleted a review!")
         // Redirect the user to the campground's detail page
         res.redirect(`/campgrounds/${id}`);
     })
