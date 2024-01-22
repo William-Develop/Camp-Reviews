@@ -2,6 +2,7 @@ const express = require("express");    // Import the express module to create th
 const path = require("path");   // Import the path module to handle and transform file paths.
 const mongoose = require ("mongoose");  // Import the mongoose module to interact with MongoDB.
 const ejsMate = require('ejs-mate');    // Import the ejs-mate module for layout support in EJS templates.
+const session = require("express-session");
 const ExpressError = require("./utilities/ExpressError"); // Import ExpressError class to create HTTP error objects.
 const methodOverride = require("method-override");  // Use HTTP verbs such as PUT or DELETE where the client doesn't support it.
 
@@ -31,6 +32,19 @@ app.set("views", path.join(__dirname, "views")); // Set views directory
 app.use(express.urlencoded({extended: true})); // allows for rich objects/arrays encoded to URL-encoded format, allowing for a JSON-like experience.
 app.use(methodOverride("_method")); // Middleware to allow for HTTP verbs like PUT or DELETE.
 app.use(express.static(path.join(__dirname, "public")));
+
+const sessionConfig = {
+    secret: "thisShouldBeABetterSecret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+}
+app.use(session(sessionConfig));
+
 
 app.use("/campgrounds", campgrounds);
 app.use("/campgrounds/:id/reviews", reviews)
