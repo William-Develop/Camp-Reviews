@@ -48,7 +48,7 @@ router.post("/",
         const campground = new Campground(req.body.campground);
         // Save new campground to the database
         await campground.save();
-        req.flash("success", "Successfully made a new campground!")
+        req.flash("success", "Successfully added a new campground!")
         // Redirect the client to the new campground's page
         res.redirect(`/campgrounds/${campground._id}`)
     })
@@ -60,6 +60,10 @@ router.get("/:id",
     catchAsync(async (req, res) => {
         // Find campground by id and populate its reviews
         const campground = await Campground.findById(req.params.id).populate("reviews");
+        if(!campground) {
+            req.flash("error", "Cannot find campground!")
+            return res.redirect("/campgrounds");
+        }
         // Render 'campgrounds/show' view and pass the campground data to it
         res.render("campgrounds/show", { campground });
     })
@@ -71,6 +75,10 @@ router.get("/:id/edit",
     catchAsync(async (req, res) => {
         // Find the campground by its id
         const campground = await Campground.findById(req.params.id)
+        if(!campground) {
+            req.flash("error", "Cannot find campground!")
+            return res.redirect("/campgrounds");
+        }
         // Render the 'campgrounds/edit' view and pass the campground data to it
         res.render("campgrounds/edit", { campground });
     })
