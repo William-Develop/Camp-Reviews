@@ -2,11 +2,8 @@ const express = require("express");    // Import the express module to create th
 const path = require("path");   // Import the path module to handle and transform file paths.
 const mongoose = require ("mongoose");  // Import the mongoose module to interact with MongoDB.
 const ejsMate = require('ejs-mate');    // Import the ejs-mate module for layout support in EJS templates.
-// const { campgroundSchema, reviewSchema } = require("./schemas.js"); // Import schemas for campgrounds and reviews.
-const ExpressError = require("./utilities/ExpressError");   // Import ExpressError class to create HTTP error objects.
-const methodOverride = require("method-override");  // Import the method-override module to use HTTP verbs such as PUT or DELETE in places where the client doesn't support it.
-// const Campground = require("./models/campground");  // Import the Campground model.
-// const Review = require("./models/review");  // Import the Review model.
+const ExpressError = require("./utilities/ExpressError"); // Import ExpressError class to create HTTP error objects.
+const methodOverride = require("method-override");  // Use HTTP verbs such as PUT or DELETE where the client doesn't support it.
 
 const campgrounds = require("./routes/campgrounds");
 const reviews = require("./routes/reviews");
@@ -14,13 +11,10 @@ const reviews = require("./routes/reviews");
 // Connect to MongoDB
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {});
 
-// Set up connection to MongoDB
 const db = mongoose.connection;
-// Bind an event listener to the 'error' event on the connection object
-// This will log any errors that occur during the connection
+// Bind event listener to the 'error' event on the connection object. To log errors that occur during the connection.
 db.on("error", console.error.bind(console, "connection error: "));
-// Bind an event listener to the 'open' event on the connection object.
-// This will run once when the connection is open
+// Bind event listener to the 'open' event on the connection object.Will run once when the connection is open
 db.once("open", () => {
     console.log("Database connected!");
 });
@@ -28,18 +22,15 @@ db.once("open", () => {
 // Initialize Express app
 const app = express();
 
-// Set EJS template engine using ejsMate enhanced features
-app.engine("ejs", ejsMate);
-// Set view engine to EJS
-app.set("view engine", "ejs");
-// Set views directory
-app.set("views", path.join(__dirname, "views"));
+
+app.engine("ejs", ejsMate); // Set EJS template engine using ejsMate
+app.set("view engine", "ejs"); // Set view engine to EJS
+app.set("views", path.join(__dirname, "views")); // Set views directory
 
 // Use middleware for parsing request bodies
-// The "extended: true" allows for rich objects/arrays to be encoded into URL-encoded format, allowing for a JSON-like experience.
-app.use(express.urlencoded({extended: true}));
-// Middleware to allow for HTTP verbs like PUT or DELETE where the client doesn't support it.
-app.use(methodOverride("_method"));
+app.use(express.urlencoded({extended: true})); // allows for rich objects/arrays encoded to URL-encoded format, allowing for a JSON-like experience.
+app.use(methodOverride("_method")); // Middleware to allow for HTTP verbs like PUT or DELETE.
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/campgrounds", campgrounds);
 app.use("/campgrounds/:id/reviews", reviews)
