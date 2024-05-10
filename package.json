@@ -12,7 +12,7 @@
   "dependencies": {
     "chromedriver": "^120.0.0",
     "connect-flash": "^0.1.1",
-    "ejs": "^3.1.9",
+    "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",
     "express": "^4.19.2",
     "express-session": "^1.17.3",
