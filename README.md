@@ -1,2 +1,2 @@
 # Yelp-Camp-
-Sample project to demonstrate software design skills. 
+Project to demonstrate software design skills.
